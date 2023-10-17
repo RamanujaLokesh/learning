@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width= , initial-scale=1.0">
+    <title>EXPENSES TRACKER</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="heading">expencess tracker</div>
+    <% if (spendings.length>0) {%>
+        
+        <div class="grid">
+            
+            <% for(let i=0;i<spendings.length;i++){%>
+                <div class="cost">
+                    <%= spendings[i].amount %>
+                    </div>
+
+                    
+                    
+                            <div class="personCont">
+                    <%= spendings[i].personCount %>
+                    
+                            </div>
+                            <div class="details">
+                    <%= spendings[i].details %>
+                    
+                            </div><br>
+                    <%};%>
+                    
+                    
+                    <%    } else{%>
+                        <h1>add expenses</h1>
+                        <%}  %>
+
+    </div>
+<!-- <div><h1>total is <%= locals.spendings %></h1></div> -->
+    <form action="/add" method="POST">
+        <div class="item">
+            <label for="amount">amount</label><input type="number" name="amount" id="" required>
+            <label for="personCount">persons</label><input type="number" name="personCount" id="personCount" required>
+            <label for="details">details</label><input type="text" name="details" id="details">
+            <input type="submit" value="ADD">
+        </div>
+    </form>
+</body>
+</html>

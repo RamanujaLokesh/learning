@@ -1,0 +1,14 @@
+body{
+    /* background-color: black; */
+    /* color: aliceblue; */
+}
+.heading{
+    height: 20px;
+    /* color: white; */
+}
+.grid{
+    display: grid;
+    background-color: rgb(24, 19, 19);
+    /* height: 2rem; */
+    color: aliceblue;
+}
