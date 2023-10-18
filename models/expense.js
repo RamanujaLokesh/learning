@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 
 
 const expenseSchema = new Schema({
+   person:{
+type:String,
+required:true
+   },
    amount:{
     type:Number,
     required: true

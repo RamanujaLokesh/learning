@@ -12,3 +12,17 @@ body{
     /* height: 2rem; */
     color: aliceblue;
 }
+.flexcontainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.di{
+display: inline-block;
+background-color: aliceblue;
+color: black;
+width:30px;
+margin-top: 3px;
+border: 1px green;
+/* float: left; */
+}

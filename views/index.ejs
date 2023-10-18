@@ -8,25 +8,28 @@
 </head>
 <body>
     <div class="heading">expencess tracker</div>
+    <% let total=urtotal=0; %>
     <% if (spendings.length>0) {%>
-        
+        <div><h1><%= spendings[0].person %></h1></div>
         <div class="grid">
             
-            <% for(let i=0;i<spendings.length;i++){%>
-                <div class="cost">
-                    <%= spendings[i].amount %>
-                    </div>
+            <% for(let i=0;i<spendings.length;i++){ total+=spendings[i].amount; urtotal+=(spendings[i].amount/spendings[i].personCount);%>
+                <div class="flexcontainer">
 
-                    
-                    
-                            <div class="personCont">
-                    <%= spendings[i].personCount %>
-                    
-                            </div>
-                            <div class="details">
-                    <%= spendings[i].details %>
-                    
-                            </div><br>
+                    <div class="cost di">
+                        <%= spendings[i].amount %>
+                    </div>                  
+                    <div class="personCont di">
+                        <%= spendings[i].personCount %>
+                        
+                    </div>
+                    <div class="details di">
+                        <%= spendings[i].details %>
+                        
+                    </div>
+                    <a href="/delete/<%=spendings[i]._id %>"><button>D</button></a><br>
+                    <!-- <br> -->
+                </div>
                     <%};%>
                     
                     
@@ -35,7 +38,7 @@
                         <%}  %>
 
     </div>
-<!-- <div><h1>total is <%= locals.spendings %></h1></div> -->
+<div><h1>total is <%= total %><br>your total is <%= urtotal %></h1></div>
     <form action="/add" method="POST">
         <div class="item">
             <label for="amount">amount</label><input type="number" name="amount" id="" required>
