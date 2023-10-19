@@ -6,13 +6,20 @@
     <title>signup</title>
 </head>
 <body>
-    <form action="/loginuser" method="POST">
+    <form action="/loginuser" method="GET">
+        <button type="submit">back</button>
+    </form>
+    
+    <br>
+    
+    <form action="/register-user" method="POST">
         <label for="username">username</label>
         <input type="text" name="username" id="username">
         
-        <label for="password">password</label>
-        <input type="password" name="password" id="password">
-        <input type="submit">
+        <label for="password">pin</label>
+        <input type="password" name="pin" id="pin">
+        <input type="submit" name="register">
     </form>
+    <p>after singingUp click back and login</p>
 </body>
 </html>

@@ -21,7 +21,10 @@ app.use(morgan("tiny"));
 const username =["ramanuja","likith","rushil"];
 const Password = "kolkata";
 let i=-1;
-let approved = false;
+let approved=false;
+
+
+
 function loginvalidater(urname,passwd){
 if(passwd!==Password)
 return false;
@@ -40,36 +43,87 @@ if (username.includes(urname)) {
 app.get('/' ,(req,res)=>{
 res.render('login.ejs');
 });
-app.post('/loginuser',(req,res)=>{
-    i=-1;
-    
-if (loginvalidater(req.body['username'],req.body['password'])) {
-    console.log('approved from loginvalidator');
-    res.redirect('/home')
-} else {
-    console.log('not approved by loginvalidator')
-    res.redirect('/')
-}
-})
+
+let presentUser;
+let pinfrmdb;
+let pinfrminput;
+
+app.post('/loginuser',  (req, res) => {
+    Userdata.findOne({ username: req.body['username'] })
+      .then((result) => {
+        presentUser = result;
+        pinfrmdb = parseInt(presentUser.pin);
+  pinfrminput=parseInt(req.body['pin']);
+        // Define a callback function to update approved and redirect
+        const loginCallback = () => {
+          approved = true;
+        };
+        
+        // if (pinfrmdb === parseInt(req.body['pin'])) {
+            //   console.log('approved from loginvalidator');
+            //   // Call the callback function if password is correct
+            //   loginCallback();
+            // } else {
+                //   console.log('not approved by loginvalidator');
+                //   res.redirect('/');
+                // }
+            })
+            .catch((err) => {
+                console.log('error in getting username and password is::' + err);
+            });
+            res.redirect('/home');
+  });
+  
 
 
-app.get('/home',(req,res)=>{
-if (approved) {
-    Expense.find({person:username[i]})
-    .then(result=>{
-        res.render('index.ejs',{spendings:result});
-    })
-    .catch(err=>console.log(err));
-} else {
-    res.render('login.ejs');
-}
+app.get('/signuppg',(req,res)=>{
+res.render('signup.ejs');
 });
+
+
+app.get('/loginuser',(req,res)=>{
+res.redirect('/');
+});
+
+
+
+app.post("/register-user",(req,res)=>{
+    console.log(req.body);
+    const userdata = new Userdata({
+        username:req.body['username'],
+        pin:parseInt(req.body['pin'])
+    });
+    userdata.save()
+    .then((result)=>{console.log('saved')})
+    .catch((err)=>{
+        console.log(err);
+    });
+    res.redirect('/');
+    });
+
+
+    app.get('/home', (req, res) => {
+        console.log(pinfrmdb,pinfrminput)
+        // Check login status before proceeding
+        if (pinfrmdb!==pinfrminput) {
+          res.redirect('/');
+          return;
+        }
+      
+        Expense.find({ person: presentUser.username })
+          .then(result => {
+            res.render('index.ejs', { spendings: result });
+          })
+          .catch(err => console.log(err));
+      });
+      
 
 
 app.post("/add",(req,res)=>{
 console.log(req.body);
+console.log(presentUser);
 const expense = new Expense({
-    person:username[i],
+    person:presentUser.username,
     amount:parseInt(req.body['amount']),
     personCount:parseInt(req.body['personCount']),
     details:req.body['details']
@@ -81,6 +135,8 @@ expense.save()
 });
 res.redirect('/home');
 });
+
+
 
 
 app.get('/delete/:id',async (req,res)=>{
