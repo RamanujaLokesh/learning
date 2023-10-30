@@ -15,66 +15,43 @@ mongoose.connect(dbURI,{useNewUrlParser:true,useUnifiedTopology:true})
 app.use(express.static("public"))
 
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(morgan("tiny"));
 
-const username =["ramanuja","likith","rushil"];
-const Password = "kolkata";
-let i=-1;
+
 let approved=false;
+let presentUser;
+// let pinfrmdb;
+// let pinfrminput;
 
 
 
-function loginvalidater(urname,passwd){
-if(passwd!==Password)
-return false;
-if (username.includes(urname)) {
-    let j=0
-    while (j < username.length) {
-        if (urname===username[j]) {
-            i=j;
-        }
-        j++;
-    }
-    approved = true;
-    return true;
-}
-}
+
 app.get('/' ,(req,res)=>{
 res.render('login.ejs');
 });
 
-let presentUser;
-let pinfrmdb;
-let pinfrminput;
+
 
 app.post('/loginuser', async (req, res) => {
-await    Userdata.findOne({ username: req.body['username'] })
-      .then((result) => {
-        presentUser = result;
-        pinfrmdb = parseInt(presentUser.pin);
-  pinfrminput=parseInt(req.body['pin']);
-        // Define a callback function to update approved and redirect
-       function loginCallback() {
-          approved = true;
-        };
-        
-        if (pinfrmdb === parseInt(req.body['pin'])) {
-              console.log('approved from loginvalidator');
-            //   Call the callback function if password is correct
-              loginCallback();
-              res.redirect('/home');
-            } else {
-                  console.log('not approved by loginvalidator');
-                  res.redirect('/');
-                }
-            })
-            .catch((err) => {
-                console.log('error in getting username and password is::' + err);
-            });
-            // res.redirect('/home');
-  });
-  
+  try{
+     presentUser = await Userdata.findOne({ username: req.body['username'] })
+    
+    console.log(req.body['password'])
+    if (presentUser.pin === parseInt(req.body['password'])) {
+      approved=true;
+      res.redirect("/home");
+      // res.render("index.ejs");
+    } else {
+      res.redirect("/");
+      // res.send("wrong password");
+    }
+  } catch {
+    res.redirect("/");
+    // res.send("wrong details");
+  }
+});
+
 
 
 app.get('/signuppg',(req,res)=>{
@@ -88,9 +65,9 @@ res.redirect('/');
 
 
 
-app.post("/register-user",(req,res)=>{
+app.post("/register-user", async(req,res)=>{
     console.log(req.body);
-    const userdata = new Userdata({
+   const userdata = new Userdata({
         username:req.body['username'],
         pin:parseInt(req.body['pin'])
     });
@@ -103,15 +80,15 @@ app.post("/register-user",(req,res)=>{
     });
 
 
-    app.get('/home', (req, res) => {
-        console.log(pinfrmdb,pinfrminput)
+    app.get('/home', async(req, res) => {
+        // console.log(pinfrmdb,pinfrminput)
         // Check login status before proceeding
-        if (pinfrmdb!==pinfrminput) {
+        if (!approved) {
           res.redirect('/');
           return;
         }
       
-        Expense.find({ person: presentUser.username })
+      await  Expense.find({ person: presentUser.username })
           .then(result => {
             res.render('index.ejs', { spendings: result });
           })
@@ -151,6 +128,11 @@ app.get('/delete/:id',async (req,res)=>{
     }).catch(function(error){
         console.log(error); });
     res.redirect('/home');
+});
+
+
+app.get('/logout',(req,res)=>{
+res.redirect('/');
 });
 
 

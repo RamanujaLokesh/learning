@@ -9,6 +9,7 @@
 <body>
     <div class="heading">expencess tracker</div>
     <% let total=urtotal=0; %>
+    <% if(locals.spendings){ %>
     <% if (spendings.length>0) {%>
         <div><h1><%= spendings[0].person %></h1></div>
         <div class="grid">
@@ -36,6 +37,7 @@
                     <%    } else{%>
                         <h1>add expenses</h1>
                         <%}  %>
+                        <% } %>
 
     </div>
 <div><h1>total is <%= total %><br>your total is <%= urtotal %></h1></div>
@@ -47,5 +49,9 @@
             <input type="submit" value="ADD">
         </div>
     </form>
+<form>
+    <button type="submit" formaction = "/logout" formmethod = "GET" >logout</button>
+</form>
+    
 </body>
 </html>
